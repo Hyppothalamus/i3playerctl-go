@@ -72,7 +72,7 @@ func formatFirefox(player string) string {
         log.Fatalf("failed to format metadata: %v", err)
     }
 
-    artist := artistOut.String()
+    artist := strings.Split(artistOut.String(), "\n")[0]
     title := titleOut.String()
     result  := ""
     if artist == "\n" {

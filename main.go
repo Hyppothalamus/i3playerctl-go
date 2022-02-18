@@ -18,6 +18,9 @@ func getCurrentPlayer() string {
     if err != nil {
         log.Fatalf("Error when checking wich player is running: %v", err)
     }
+    if out.String() == "No players where found" {
+        return ""
+    }
     players := strings.Split(out.String(), "\n")
     if len(players) > 0 {
         players = players[:len(players) - 1]

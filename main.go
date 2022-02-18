@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
-    "strings"
+	"strings"
 )
 
 // returns the current plater based on which players are open
@@ -62,5 +63,10 @@ func main() {
     }
     //fmt.Printf("current playing player: %v", player)
     // TODO: select correct format for formating player for display
-    fmt.Printf(formatSpotify(player))
+    switch player {
+    case "spotify":
+        fmt.Printf(formatSpotify(player))
+    default:
+        os.Exit(0)
+    }
 }

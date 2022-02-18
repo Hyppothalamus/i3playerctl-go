@@ -56,16 +56,49 @@ func formatSpotify(player string) string {
     return out.String()
 }
 
+func formatFirefox(player string) string {
+    cmd := exec.Command("playerctl", "-p", player, "metadata", "xesam:title")
+    var titleOut bytes.Buffer
+    cmd.Stdout = &titleOut
+    err := cmd.Run()
+    if err != nil {
+        log.Fatalf("failed to format metadata: %v", err)
+    }
+    cmd = exec.Command("playerctl", "-p", player, "metadata", "xesam:artist")
+    var artistOut bytes.Buffer
+    cmd.Stdout = &artistOut
+    err = cmd.Run()
+    if err != nil {
+        log.Fatalf("failed to format metadata: %v", err)
+    }
+
+    artist := artistOut.String()
+    title := titleOut.String()
+    result  := ""
+    if artist == "\n" {
+        first := strings.Split(title, " - ")[0]
+        second := strings.Split(title, " - ")[1]
+        result = first + "  " + second
+        return result
+    }
+    result = artist  + "  " + title
+    return result
+}
+
 func main() {
     player := getCurrentPlayer()
     if player == "" {
         log.Fatalf("no current player playing")
     }
-    //fmt.Printf("current playing player: %v", player)
+    if strings.Contains(player, "instance") {
+        player = strings.Split(player, ".")[0]
+    }
     // TODO: select correct format for formating player for display
     switch player {
     case "spotify":
         fmt.Printf(formatSpotify(player))
+    case "firefox":
+        fmt.Printf(formatFirefox(player))
     default:
         os.Exit(0)
     }

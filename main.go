@@ -42,7 +42,7 @@ func getCurrentPlayer() string {
 }
 
 func formatSpotify(player string) string {
-    cmd := exec.Command("playerctl", "-p", player, "metadata", "--format", "now playing: {{artist}} - {{title}}")
+    cmd := exec.Command("playerctl", "-p", player, "metadata", "--format", "{{artist}}  {{title}}")
     var out bytes.Buffer
     cmd.Stdout = &out
     err := cmd.Run()

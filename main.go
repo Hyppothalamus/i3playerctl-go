@@ -41,6 +41,23 @@ func getCurrentPlayer() string {
     return ""
 }
 
+func formatSpotify(player string) string {
+    cmd := exec.Command("playerctl", "-p", player, "metadata", "--format", "now playing: {{artist}} - {{title}}")
+    var out bytes.Buffer
+    cmd.Stdout = &out
+    err := cmd.Run()
+    if err != nil {
+        log.Fatalf("failed to format metadata: %v", err)
+    }
+    return out.String()
+}
+
 func main() {
-    fmt.Printf("current playing player: %v", getCurrentPlayer())
+    player := getCurrentPlayer()
+    if player == "" {
+        log.Fatalf("no current player playing")
+    }
+    //fmt.Printf("current playing player: %v", player)
+    // TODO: select correct format for formating player for display
+    fmt.Printf(formatSpotify(player))
 }

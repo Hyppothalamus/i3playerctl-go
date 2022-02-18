@@ -85,6 +85,21 @@ func formatFirefox(player string) string {
     return result
 }
 
+func formatVlc(player string) string {
+    cmd := exec.Command("playerctl", "-p", player, "metadata", "xesam:url")
+    var filePathOut bytes.Buffer
+    cmd.Stdout = &filePathOut
+    err := cmd.Run()
+    if err != nil {
+        log.Fatalf("failed to format metadata: %v", err)
+    }
+    // TODO: get part from url between last . and /
+    // filePath := filePathOut.String()
+    // lastIndex := strings.LastIndex(filePath, ".")
+    // firstIndex := strings.LastIndex(filePath, "/")
+    return ""
+}
+
 func main() {
     player := getCurrentPlayer()
     if player == "" {

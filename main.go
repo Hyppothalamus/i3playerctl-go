@@ -76,6 +76,9 @@ func formatFirefox(player string) string {
     title := titleOut.String()
     result  := ""
     if artist == "\n" {
+        if !strings.Contains(title, " - ") {
+            return "  " + title
+        }
         first := strings.Split(title, " - ")[0]
         second := strings.Split(title, " - ")[1]
         result = first + "  " + second
@@ -94,10 +97,11 @@ func formatVlc(player string) string {
         log.Fatalf("failed to format metadata: %v", err)
     }
     // TODO: get part from url between last . and /
-    // filePath := filePathOut.String()
-    // lastIndex := strings.LastIndex(filePath, ".")
-    // firstIndex := strings.LastIndex(filePath, "/")
-    return ""
+    filePath := filePathOut.String()
+    lastIndex := strings.LastIndex(filePath, ".")
+    firstIndex := strings.LastIndex(filePath, "/")
+    file := filePath[(firstIndex + 1):lastIndex]
+    return " 嗢" + file
 }
 
 func main() {
@@ -114,6 +118,8 @@ func main() {
         fmt.Printf(formatSpotify(player))
     case "firefox":
         fmt.Printf(formatFirefox(player))
+    case "vlc":
+        fmt.Printf(formatVlc(player))
     default:
         os.Exit(0)
     }

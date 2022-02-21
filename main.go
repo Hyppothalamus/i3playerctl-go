@@ -77,7 +77,7 @@ func formatFirefox(player string) string {
     artist := strings.Split(artistOut.String(), "\n")[0]
     title := titleOut.String()
     result  := ""
-    if artist == "\n" {
+    if artist == "\n" || artist == "" {
         if !strings.Contains(title, " - ") {
             return "  " + title
         }

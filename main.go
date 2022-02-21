@@ -112,7 +112,7 @@ func formatVlc(player string) string {
 func printPlaying() {
     player := getCurrentPlayer()
     if player == "" {
-        log.Fatalf("no current player playing")
+        return
     }
     if strings.Contains(player, "instance") {
         player = strings.Split(player, ".")[0]
@@ -133,6 +133,9 @@ func printPlaying() {
 func main() {
     controlFlag := flag.NewFlagSet("ctr", flag.ExitOnError)
     controlNext := controlFlag.Bool("next", false, "next")
+    controlPause := controlFlag.Bool("pause", false, "pause")
+    controlPlay := controlFlag.Bool("play", false, "play")
+    controlPlayPause := controlFlag.Bool("playpause", false, "playpause")
     if len(os.Args) < 2 {
         printPlaying()
         os.Exit(0)
@@ -141,18 +144,36 @@ func main() {
     switch os.Args[1] {
         case "ctr":
             controlFlag.Parse(os.Args[2:])
+            player := getCurrentPlayer()
+            if player == "" {
+                // do nothing?
+            }
+            if strings.Contains(player, "instance") {
+                player = strings.Split(player, ".")[0]
+            }
             if *controlNext {
-                player := getCurrentPlayer()
-                if player == "" {
-                    log.Fatalf("no current player playing")
-                }
-                if strings.Contains(player, "instance") {
-                    player = strings.Split(player, ".")[0]
-                }
                 cmd := exec.Command("playerctl", "-p", player, "next")
                 err := cmd.Run()
                 if err != nil {
-                    log.Fatalf("failed to format metadata: %v", err)
+                    log.Fatalf("failed to skip song: %v", err)
+                }
+            } else if *controlPause {
+                cmd := exec.Command("playerctl", "-p", player, "pause")
+                err := cmd.Run()
+                if err != nil {
+                    log.Fatalf("failed to pause song: %v", err)
+                }
+            } else if *controlPlay {
+                cmd := exec.Command("playerctl", "play")
+                err := cmd.Run()
+                if err != nil {
+                    log.Fatalf("failed to play song: %v", err)
+                }
+            } else if *controlPlayPause {
+                cmd := exec.Command("playerctl", "play-pause")
+                err := cmd.Run()
+                if err != nil {
+                    log.Fatalf("failed to play-pause song: %v", err)
                 }
             }
     }

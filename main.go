@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+    "flag"
 )
 
 // returns the current plater based on which players are open
@@ -108,9 +109,7 @@ func formatVlc(player string) string {
     return " 嗢" + file
 }
 
-func main() {
-    // TODO: add flags and args so content is controllable
-    // with this program widePeepoHappy
+func printPlaying() {
     player := getCurrentPlayer()
     if player == "" {
         log.Fatalf("no current player playing")
@@ -128,5 +127,33 @@ func main() {
         fmt.Printf(formatVlc(player))
     default:
         os.Exit(0)
+    }
+}
+
+func main() {
+    controlFlag := flag.NewFlagSet("ctr", flag.ExitOnError)
+    controlNext := controlFlag.Bool("next", false, "next")
+    if len(os.Args) < 2 {
+        printPlaying()
+        os.Exit(0)
+    }
+
+    switch os.Args[1] {
+        case "ctr":
+            controlFlag.Parse(os.Args[2:])
+            if *controlNext {
+                player := getCurrentPlayer()
+                if player == "" {
+                    log.Fatalf("no current player playing")
+                }
+                if strings.Contains(player, "instance") {
+                    player = strings.Split(player, ".")[0]
+                }
+                cmd := exec.Command("playerctl", "-p", player, "next")
+                err := cmd.Run()
+                if err != nil {
+                    log.Fatalf("failed to format metadata: %v", err)
+                }
+            }
     }
 }

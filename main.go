@@ -36,8 +36,6 @@ func getCurrentPlayer() string {
             log.Fatalf("error checking wich open player is playing: %v", err)
         }
         status := statusOut.String()
-        //fmt.Printf("\n status from %v: %v", player, statusOut.String())
-        // fmt.Printf("the current players: %v\n", players[i])
         if strings.Contains(status, "Playing") {
             return player
         }
@@ -45,6 +43,8 @@ func getCurrentPlayer() string {
     return ""
 }
 
+// format the current playing spotify song 
+// to display with nerdfont glyph
 func formatSpotify(player string) string {
     cmd := exec.Command("playerctl", "-p", player, "metadata", "--format", "{{artist}}  {{title}}")
     var out bytes.Buffer
@@ -56,6 +56,8 @@ func formatSpotify(player string) string {
     return out.String()
 }
 
+// format current playing content in firefox
+// to display with nerdfont glyph
 func formatFirefox(player string) string {
     cmd := exec.Command("playerctl", "-p", player, "metadata", "xesam:title")
     var titleOut bytes.Buffer
@@ -88,6 +90,8 @@ func formatFirefox(player string) string {
     return result
 }
 
+// format current playing content in vlc
+// for display with nerdfont glyph
 func formatVlc(player string) string {
     cmd := exec.Command("playerctl", "-p", player, "metadata", "xesam:url")
     var filePathOut bytes.Buffer
@@ -105,6 +109,8 @@ func formatVlc(player string) string {
 }
 
 func main() {
+    // TODO: add flags and args so content is controllable
+    // with this program widePeepoHappy
     player := getCurrentPlayer()
     if player == "" {
         log.Fatalf("no current player playing")
